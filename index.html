@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BitLight: A 4-Bit Binary Number Display | Ronnel P. Gambong</title>
+  <meta name="description" content="CS101L Module 2 final project portfolio by Ronnel P. Gambong: a 4-bit binary number display built in Tinkercad.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#top" aria-label="BitLight, back to top">
+      <span class="mini-leds" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <span class="brand-name">BitLight</span>
+      <span class="brand-value" aria-live="polite"></span>
+    </a>
+    <nav aria-label="Sections">
+      <ul>
+        <li><a href="#problem">Problem</a></li>
+        <li><a href="#numbers">Numbers</a></li>
+        <li><a href="#logic">Logic</a></li>
+        <li><a href="#kmap">K-Map</a></li>
+        <li><a href="#algorithm">Algorithm</a></li>
+        <li><a href="#flowchart">Flowchart</a></li>
+        <li><a href="#build">Build</a></li>
+        <li><a href="#testing">Testing</a></li>
+        <li><a href="#demo">Demo</a></li>
+        <li><a href="#reflection">Reflection</a></li>
+        <li><a href="#certificates">Certificates</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- 1. HOME / INTRODUCTION -->
+<section class="hero" id="top" aria-labelledby="title">
+  <div class="hero-text">
+    <p class="course">CS101L Introduction to Computer Systems, Module 2 Final Project</p>
+    <h1 id="title">BitLight</h1>
+    <p class="subtitle">A 4-bit binary number display</p>
+    <div class="author">
+      <img src="images/ronnel.jpg" alt="Ronnel P. Gambong" width="96" height="96">
+      <div>
+        <p class="author-name">Ronnel P. Gambong</p>
+        <p>BS Computer Science, CS101L Section A124</p>
+        <p>Mapúa Malayan Colleges Mindanao</p>
+      </div>
+    </div>
+    <p class="overview">BitLight is a Tinkercad circuit that turns binary numbers into light. Four slide switches are the four bits of a number, worth 8, 4, 2 and 1. Each switch drives one red LED, so the row of LEDs shows the binary pattern and you read it as a decimal or hexadecimal value from 0 to 15.</p>
+  </div>
+
+  <div class="board" role="group" aria-labelledby="board-label">
+    <p id="board-label" class="board-label">Try it: flip the switches</p>
+    <div class="bits">
+      <div class="bit" data-bit="3">
+        <span class="led" aria-hidden="true"></span>
+        <span class="weight">8</span>
+        <button class="switch" type="button" aria-pressed="false" aria-label="Switch S3, worth 8"><span class="knob"></span></button>
+        <span class="sw-name">S3</span>
+      </div>
+      <div class="bit" data-bit="2">
+        <span class="led" aria-hidden="true"></span>
+        <span class="weight">4</span>
+        <button class="switch" type="button" aria-pressed="false" aria-label="Switch S2, worth 4"><span class="knob"></span></button>
+        <span class="sw-name">S2</span>
+      </div>
+      <div class="bit" data-bit="1">
+        <span class="led" aria-hidden="true"></span>
+        <span class="weight">2</span>
+        <button class="switch" type="button" aria-pressed="false" aria-label="Switch S1, worth 2"><span class="knob"></span></button>
+        <span class="sw-name">S1</span>
+      </div>
+      <div class="bit" data-bit="0">
+        <span class="led" aria-hidden="true"></span>
+        <span class="weight">1</span>
+        <button class="switch" type="button" aria-pressed="false" aria-label="Switch S0, worth 1"><span class="knob"></span></button>
+        <span class="sw-name">S0</span>
+      </div>
+    </div>
+    <div class="readout" aria-live="polite">
+      <div><span class="r-val" id="r-bin">1011</span><span class="r-base">binary</span></div>
+      <div><span class="r-val" id="r-dec">11</span><span class="r-base">decimal</span></div>
+      <div><span class="r-val" id="r-hex">B</span><span class="r-base">hex</span></div>
+    </div>
+    <p class="sum" id="r-sum">8 + 2 + 1 = 11</p>
+    <div class="alert-row">
+      <span class="led led-small" id="alert-led" aria-hidden="true"></span>
+      <span>Alert LED from the K-Map: on when the value is 10 or more</span>
+    </div>
+    <div class="board-actions">
+      <button type="button" class="chip" data-set="0">All off</button>
+      <button type="button" class="chip" data-set="15">All on</button>
+    </div>
+  </div>
+</section>
+
+<!-- 2. PROBLEM AND OBJECTIVES -->
+<section class="block" id="problem" aria-labelledby="h-problem">
+  <header class="block-head">
+    <span class="num">2</span>
+    <h2 id="h-problem">Problem and objectives</h2>
+  </header>
+  <div class="cols">
+    <div class="prose">
+      <h3>The problem</h3>
+      <p>Many first-year students find binary hard to picture. A string like <code>1011</code> looks abstract, and it is easy to forget which position is worth 8, 4, 2 or 1. Most practice happens on paper, so learners never see how one bit turning on or off changes a number.</p>
+      <h3>Who it is for</h3>
+      <p>CS101L students, and teachers who need a simple classroom demo of number systems and basic logic.</p>
+      <h3>Proposed solution</h3>
+      <p>A breadboard circuit where each switch completes a path from a 9V battery, through a current-limiting resistor, to its own LED. Switch on means 1 and the LED lights; switch off means 0 and the LED stays dark.</p>
+    </div>
+    <div class="prose">
+      <h3>Objectives</h3>
+      <ul>
+        <li>Build a working 4-bit binary display in Tinkercad.</li>
+        <li>Show each bit's place value (8, 4, 2, 1) with its own LED.</li>
+        <li>Use it to practise binary, decimal and hexadecimal conversion and binary arithmetic.</li>
+        <li>Model the circuit with logic gates, a truth table, Boolean algebra and a K-Map.</li>
+      </ul>
+      <h3>Key features</h3>
+      <ul>
+        <li>Four independent bits, from S3 (worth 8) on the left to S0 (worth 1) on the right.</li>
+        <li>Shows all 16 values, 0000 to 1111 (0 to 15, or 0 to F in hex).</li>
+        <li>A resistor on every LED keeps the current safe.</li>
+        <li>No microcontroller: the wiring itself does the logic.</li>
+      </ul>
+      <h3>Expected output</h3>
+      <p>The LEDs match the switches. Switches on, off, on, on light the LEDs worth 8, 2 and 1, which reads as 1011<sub>2</sub> = 11<sub>10</sub> = B<sub>16</sub>. <button type="button" class="link-btn" data-set="11">Show 1011 on BitLight</button></p>
+    </div>
+  </div>
+</section>
+
+<!-- 3. NUMBER SYSTEMS AND BINARY ARITHMETIC -->
+<section class="block" id="numbers" aria-labelledby="h-numbers">
+  <header class="block-head">
+    <span class="num">3</span>
+    <h2 id="h-numbers">Number systems and binary arithmetic</h2>
+  </header>
+
+  <div class="examples">
+    <article class="work">
+      <h3>Decimal to binary: 13<sub>10</sub></h3>
+      <p class="method">Divide by 2 and keep each remainder.</p>
+      <table class="steps">
+        <thead><tr><th scope="col">Divide</th><th scope="col">Quotient</th><th scope="col">Remainder</th></tr></thead>
+        <tbody>
+          <tr><td>13 ÷ 2</td><td>6</td><td class="hot">1</td></tr>
+          <tr><td>6 ÷ 2</td><td>3</td><td class="hot">0</td></tr>
+          <tr><td>3 ÷ 2</td><td>1</td><td class="hot">1</td></tr>
+          <tr><td>1 ÷ 2</td><td>0</td><td class="hot">1</td></tr>
+        </tbody>
+      </table>
+      <p class="method">Read the remainders from the bottom up.</p>
+      <p class="answer">13<sub>10</sub> = 1101<sub>2</sub></p>
+      <button type="button" class="link-btn" data-set="13">Show 1101 on BitLight</button>
+    </article>
+
+    <article class="work">
+      <h3>Binary to decimal: 1011<sub>2</sub></h3>
+      <p class="method">Multiply each bit by its place value.</p>
+      <table class="steps">
+        <thead><tr><th scope="col">Bit</th><th scope="col">Place value</th><th scope="col">Product</th></tr></thead>
+        <tbody>
+          <tr><td class="hot">1</td><td>2<sup>3</sup> = 8</td><td>8</td></tr>
+          <tr><td>0</td><td>2<sup>2</sup> = 4</td><td>0</td></tr>
+          <tr><td class="hot">1</td><td>2<sup>1</sup> = 2</td><td>2</td></tr>
+          <tr><td class="hot">1</td><td>2<sup>0</sup> = 1</td><td>1</td></tr>
+        </tbody>
+      </table>
+      <p class="method">8 + 0 + 2 + 1 = 11</p>
+      <p class="answer">1011<sub>2</sub> = 11<sub>10</sub></p>
+      <button type="button" class="link-btn" data-set="11">Show 1011 on BitLight</button>
+    </article>
+
+    <article class="work">
+      <h3>Binary to hex: 11010110<sub>2</sub></h3>
+      <p class="method">Split into groups of 4 bits, then convert each group.</p>
+      <table class="steps">
+        <thead><tr><th scope="col">Group</th><th scope="col">Sum</th><th scope="col">Hex</th></tr></thead>
+        <tbody>
+          <tr><td>1101</td><td>8 + 4 + 0 + 1 = 13</td><td class="hot">D</td></tr>
+          <tr><td>0110</td><td>0 + 4 + 2 + 0 = 6</td><td class="hot">6</td></tr>
+        </tbody>
+      </table>
+      <p class="method">Check: D × 16 + 6 = 214, and 128 + 64 + 16 + 4 + 2 = 214.</p>
+      <p class="answer">11010110<sub>2</sub> = D6<sub>16</sub></p>
+    </article>
+  </div>
+
+  <div class="arith">
+    <article class="work">
+      <h3>Addition: 0101<sub>2</sub> + 0110<sub>2</sub> (5 + 6)</h3>
+      <pre class="column" aria-label="0101 plus 0110 equals 1011, with a carry from bit 2 into bit 3"><span class="carry">  1      carry</span>
+  0 1 0 1
++ 0 1 1 0
+  -------
+  <b>1 0 1 1</b></pre>
+      <ol class="bitsteps">
+        <li>Bit 0: 1 + 0 = 1</li>
+        <li>Bit 1: 0 + 1 = 1</li>
+        <li>Bit 2: 1 + 1 = 10, so write 0 and carry 1</li>
+        <li>Bit 3: 0 + 0 + 1 (carry) = 1</li>
+      </ol>
+      <p class="answer">1011<sub>2</sub> = 11<sub>10</sub>, and 5 + 6 = 11</p>
+      <button type="button" class="link-btn" data-set="11">Show 1011 on BitLight</button>
+    </article>
+    <article class="work">
+      <h3>Subtraction: 1100<sub>2</sub> − 0101<sub>2</sub> (12 − 5)</h3>
+      <pre class="column" aria-label="1100 minus 0101 equals 0111"><span class="carry">  0 10 1 10  after borrowing</span>
+  1  1 0  0
+− 0  1 0  1
+  ---------
+  <b>0  1 1  1</b></pre>
+      <ol class="bitsteps">
+        <li>Bit 0: 0 − 1 needs a borrow from bit 2, so 10 − 1 = 1</li>
+        <li>Bit 1: the 0 became 1 after the borrow, so 1 − 0 = 1</li>
+        <li>Bit 2: now 0 − 1, borrow from bit 3, so 10 − 1 = 1</li>
+        <li>Bit 3: now 0 − 0 = 0</li>
+      </ol>
+      <p class="answer">0111<sub>2</sub> = 7<sub>10</sub>, and 12 − 5 = 7</p>
+      <button type="button" class="link-btn" data-set="7">Show 0111 on BitLight</button>
+    </article>
+  </div>
+
+  <div class="note">
+    <h3>How I checked my results</h3>
+    <ol>
+      <li>I converted every binary answer back to decimal and compared it with the decimal working: 5 + 6 = 11, 12 − 5 = 7, 1101<sub>2</sub> = 13, D6<sub>16</sub> = 214.</li>
+      <li>I set the BitLight switches to each answer, for example 1011, and checked that the lit LEDs add up to the decimal value: 8 + 2 + 1 = 11.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- 4. LOGIC DESIGN -->
+<section class="block" id="logic" aria-labelledby="h-logic">
+  <header class="block-head">
+    <span class="num">4</span>
+    <h2 id="h-logic">Logic design</h2>
+  </header>
+  <div class="cols cols-wide">
+    <figure class="frame">
+      <img src="images/gates.png" alt="Logic-gate model: the 9V power line P and each switch S3 to S0 feed an AND gate whose output drives LED L3 to L0. A one-bit truth table shows L is 1 only when P and S are both 1." width="1400" height="859" loading="lazy">
+      <figcaption>Each switch is in series with the battery, so it behaves like an AND gate with the power line.</figcaption>
+    </figure>
+    <div class="prose">
+      <h3>How the gates work here</h3>
+      <p>Current reaches an LED only when the power P is on <em>and</em> that switch S<sub>i</sub> is on. That is an AND gate:</p>
+      <p class="formula">L<sub>i</sub> = P · S<sub>i</sub></p>
+      <p>While the circuit runs, the battery is connected, so P = 1 and the expression becomes L<sub>i</sub> = S<sub>i</sub>. Every LED simply shows its own switch's bit.</p>
+      <table class="mini-tt">
+        <caption>One bit</caption>
+        <thead><tr><th scope="col">P</th><th scope="col">S<sub>i</sub></th><th scope="col">L<sub>i</sub></th></tr></thead>
+        <tbody>
+          <tr><td>0</td><td>0</td><td>0</td></tr>
+          <tr><td>0</td><td>1</td><td>0</td></tr>
+          <tr><td>1</td><td>0</td><td>0</td></tr>
+          <tr><td>1</td><td>1</td><td class="on">1</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <h3 class="table-title">Full truth table</h3>
+  <p class="table-hint">The highlighted row is the value on BitLight right now. Select any row to show it.</p>
+  <div class="tt-wrap">
+    <table class="tt" id="truth-table">
+      <thead>
+        <tr>
+          <th scope="col">S3</th><th scope="col">S2</th><th scope="col">S1</th><th scope="col">S0</th>
+          <th scope="col" class="out">L3</th><th scope="col" class="out">L2</th><th scope="col" class="out">L1</th><th scope="col" class="out">L0</th>
+          <th scope="col">Decimal</th><th scope="col">Hex</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 5. BOOLEAN ALGEBRA AND K-MAP -->
+<section class="block" id="kmap" aria-labelledby="h-kmap">
+  <header class="block-head">
+    <span class="num">5</span>
+    <h2 id="h-kmap">Boolean algebra and K-Map</h2>
+  </header>
+  <p class="lead">BitLight's own logic is a direct L<sub>i</sub> = S<sub>i</sub>, so this section is a supporting exercise built on it: an alert output F that turns on when the number on the display is 10 or more. It is the same check a circuit uses to spot a 4-bit value that is not a single decimal digit.</p>
+  <p class="vars">Let A = S3 (8), B = S2 (4), C = S1 (2), D = S0 (1).</p>
+
+  <div class="cols">
+    <div class="prose">
+      <h3>Boolean expression</h3>
+      <p class="formula">F = Σm(10, 11, 12, 13, 14, 15)</p>
+      <p class="formula small">F = AB'CD' + AB'CD + ABC'D' + ABC'D + ABCD' + ABCD</p>
+      <h3>Simplification</h3>
+      <ol class="algebra">
+        <li>Group the pairs that differ only in D:<br><span class="formula small">AB'C(D' + D) + ABC'(D' + D) + ABC(D' + D)</span></li>
+        <li>Complement law, D' + D = 1:<br><span class="formula small">F = AB'C + ABC' + ABC</span></li>
+        <li>ABC' + ABC = AB(C' + C) = AB:<br><span class="formula small">F = AB'C + AB</span></li>
+        <li>Factor out A:<br><span class="formula small">F = A(B'C + B)</span></li>
+        <li>Absorption, B + B'C = B + C:<br><span class="formula small">F = A(B + C)</span></li>
+        <li>Expand:<br><span class="formula">F = AB + AC</span></li>
+      </ol>
+    </div>
+    <div>
+      <h3>K-Map</h3>
+      <div class="kmap-wrap">
+        <div class="kmap" id="kmap-grid" role="table" aria-label="Karnaugh map of F with rows AB and columns CD"></div>
+      </div>
+      <ul class="legend">
+        <li><span class="sw sw-red"></span>Row AB = 11 (m12, m13, m15, m14) gives <strong>AB</strong></li>
+        <li><span class="sw sw-blue"></span>AB = 11 and 10 with CD = 11 and 10 (m15, m14, m11, m10) gives <strong>AC</strong></li>
+      </ul>
+      <p>The K-Map gives the same answer as the algebra, <strong>F = AB + AC</strong>, and shows that D is not needed. The cell with the dot is the value on BitLight now.</p>
+      <figure class="frame">
+        <img src="images/alert-circuit.png" alt="Simplified logic circuit: A AND B, and A AND C, feed an OR gate whose output drives the alert LED F." width="1400" height="665" loading="lazy">
+        <figcaption>Two AND gates feed one OR gate. The alert LED on the BitLight board at the top of this page follows this circuit.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 6. ALGORITHM AND PSEUDOCODE -->
+<section class="block" id="algorithm" aria-labelledby="h-algorithm">
+  <header class="block-head">
+    <span class="num">6</span>
+    <h2 id="h-algorithm">Algorithm and pseudocode</h2>
+  </header>
+  <div class="ipo">
+    <div>
+      <h3>Inputs</h3>
+      <ul>
+        <li>9V battery power (P)</li>
+        <li>Switches S3, S2, S1, S0, each on (1) or off (0)</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Processing</h3>
+      <p>For each bit, a closed switch completes the circuit through a resistor to its LED. The place values of the lit LEDs are added: 8, 4, 2, 1.</p>
+    </div>
+    <div>
+      <h3>Outputs</h3>
+      <ul>
+        <li>LED pattern L3 to L0 (binary)</li>
+        <li>The decimal value the user reads</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="cols cols-code">
+<pre class="code"><code><span class="kw">START</span>
+   <span class="kw">SET</span> weight[3]=8, weight[2]=4, weight[1]=2, weight[0]=1
+   <span class="kw">CONNECT</span> 9V battery            <span class="cm">// power ON</span>
+   <span class="kw">WHILE</span> power is ON
+      <span class="kw">SET</span> value ← 0
+      <span class="kw">FOR</span> i ← 3 <span class="kw">DOWN TO</span> 0
+         <span class="kw">READ</span> switch S[i]
+         <span class="kw">IF</span> S[i] is ON <span class="kw">THEN</span>
+            <span class="kw">TURN ON</span> LED L[i]
+            value ← value + weight[i]
+         <span class="kw">ELSE</span>
+            <span class="kw">TURN OFF</span> LED L[i]
+         <span class="kw">END IF</span>
+      <span class="kw">END FOR</span>
+      <span class="kw">DISPLAY</span> LED pattern (binary) and value (decimal)
+   <span class="kw">END WHILE</span>
+<span class="kw">END</span></code></pre>
+    <div class="prose">
+      <h3>Structures used</h3>
+      <dl class="structs">
+        <dt>Sequence</dt><dd>The setup steps run in order: set the place values, then connect the power.</dd>
+        <dt>Selection</dt><dd><code>IF S[i] is ON … ELSE</code> decides whether each LED turns on or off.</dd>
+        <dt>Iteration</dt><dd>A <code>FOR</code> loop checks the four bits, inside a <code>WHILE</code> loop that repeats while the power is on.</dd>
+      </dl>
+      <p>The circuit does the LED steps through its wiring. Reading the pattern and adding the place values is the step the user does when interpreting the display. The script behind the BitLight board on this page runs this same algorithm.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 7. FLOWCHART -->
+<section class="block" id="flowchart" aria-labelledby="h-flowchart">
+  <header class="block-head">
+    <span class="num">7</span>
+    <h2 id="h-flowchart">Flowchart</h2>
+  </header>
+  <div class="cols cols-flow">
+    <figure class="frame">
+      <img src="images/flowchart.png" alt="Flowchart: Start, set place values, connect power, decision Power ON. If yes, set value to 0 and i to 3, decision i at least 0, read switch S of i, decision S of i ON, turn the LED on and add 2 to the i, or turn it off, then i minus 1 and loop. When i is below 0, display the LED pattern and value and return to the power check. If power is off, End." width="1400" height="1799" loading="lazy">
+    </figure>
+    <div class="prose">
+      <h3>Reading the flowchart</h3>
+      <p>It follows the pseudocode line by line.</p>
+      <ol>
+        <li>Start, set the place values, and power on.</li>
+        <li>Check whether the power is on. This repeats for as long as it is.</li>
+        <li>Set value to 0 and i to 3.</li>
+        <li>Loop while i ≥ 0, one pass per bit.</li>
+        <li>Read switch S[i].</li>
+        <li>If S[i] is on, turn the LED on and add 2<sup>i</sup>. Otherwise turn it off.</li>
+        <li>Subtract 1 from i and go back to the loop check.</li>
+        <li>After all four bits, display the LED pattern and the value.</li>
+        <li>When the power is off, end.</li>
+      </ol>
+      <h3>Symbols</h3>
+      <ul class="symbols">
+        <li><span class="sym sym-term"></span>Start and End</li>
+        <li><span class="sym sym-proc"></span>Process</li>
+        <li><span class="sym sym-io"></span>Input or output</li>
+        <li><span class="sym sym-dec"></span>Decision</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 8. IMPLEMENTATION -->
+<section class="block" id="build" aria-labelledby="h-build">
+  <header class="block-head">
+    <span class="num">8</span>
+    <h2 id="h-build">Implementation in Tinkercad</h2>
+  </header>
+  <figure class="frame frame-wide">
+    <img src="images/tinkercad-circuit.png" alt="My Tinkercad breadboard running: a 9V battery wired to the power rails, four slide switches across the top, four 1 kΩ resistors and four red LEDs below. Switches are set to 0101, so the second and fourth LEDs are lit." width="1223" height="411" loading="lazy">
+    <figcaption>The BitLight circuit in Tinkercad. <a href="https://www.tinkercad.com/things/8KqSVdDZfZS-copy-of-m2week-10-laboratory-activity?sharecode=vIAOBdadAxZkDNxc9ikZj3z1pKY1HWOPSC8IpUBXZXI">Open the Tinkercad project</a></figcaption>
+  </figure>
+  <div class="cols">
+    <div class="prose">
+      <h3>Components</h3>
+      <table class="parts">
+        <thead><tr><th scope="col">Qty</th><th scope="col">Part</th><th scope="col">Job</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>9V battery</td><td>Power source</td></tr>
+          <tr><td>1</td><td>Breadboard</td><td>Holds and connects the parts</td></tr>
+          <tr><td>4</td><td>Slide switches</td><td>Bit inputs S3 to S0</td></tr>
+          <tr><td>4</td><td>Resistors, 1 kΩ</td><td>Limit the LED current</td></tr>
+          <tr><td>4</td><td>Red LEDs</td><td>Bit outputs L3 to L0</td></tr>
+          <tr><td>–</td><td>Jumper wires</td><td>Red for power, black for ground</td></tr>
+        </tbody>
+      </table>
+      <p>There is no code: the circuit has no microcontroller, so the logic is done by the wiring.</p>
+    </div>
+    <div class="prose">
+      <h3>How it is wired</h3>
+      <ul>
+        <li>The battery's + terminal connects to the top + rail with a red wire, and its − terminal to the bottom − rail with a black wire.</li>
+        <li>Each slide switch takes power from the + rail through a short red jumper.</li>
+        <li>The switch output goes through a resistor to the LED's anode (long leg).</li>
+        <li>The LED's cathode (short leg) connects to the − rail with a black jumper.</li>
+        <li>The four paths are identical and in parallel, so each bit works on its own.</li>
+      </ul>
+      <h3>Resistor check with Ohm's law</h3>
+      <p class="formula">I = (9 V − 2 V) ÷ R</p>
+      <p>My resistors are 1 kΩ (colour bands brown, black, red, gold), so I = 7 V ÷ 1000 Ω = 7 mA, safely under a typical LED's 20 mA limit.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 9. TESTING AND RESULTS -->
+<section class="block" id="testing" aria-labelledby="h-testing">
+  <header class="block-head">
+    <span class="num">9</span>
+    <h2 id="h-testing">Testing and results</h2>
+  </header>
+  <p class="lead">For each test I set the switches, ran the Tinkercad simulation and took a screenshot. All four tests passed: every LED pattern matched the expected binary value.</p>
+  <div class="tt-wrap">
+    <table class="tests">
+      <thead>
+        <tr><th scope="col">Test</th><th scope="col">Switches S3 to S0</th><th scope="col">Expected LEDs</th><th scope="col">Expected value</th><th scope="col">Actual result</th><th scope="col">Result</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td><code>0011</code></td><td>L1, L0</td><td>3, hex 3</td><td>L1 and L0 lit, L3 and L2 dark</td><td><span class="pass">Pass</span></td></tr>
+        <tr><td>2</td><td><code>0101</code></td><td>L2, L0</td><td>5, hex 5</td><td>L2 and L0 lit, L3 and L1 dark</td><td><span class="pass">Pass</span></td></tr>
+        <tr><td>3</td><td><code>1001</code></td><td>L3, L0</td><td>9, hex 9</td><td>L3 and L0 lit, L2 and L1 dark</td><td><span class="pass">Pass</span></td></tr>
+        <tr><td>4</td><td><code>1100</code></td><td>L3, L2</td><td>12, hex C</td><td>L3 and L2 lit, L1 and L0 dark</td><td><span class="pass">Pass</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="shots">
+    <figure class="frame shot-fig"><img src="images/test-0011.png" alt="Test 1: switches 0011, the two right LEDs lit" width="1223" height="411" loading="lazy"><figcaption>Test 1: 0011 = 3 <button type="button" class="link-btn" data-set="3">Show on BitLight</button></figcaption></figure>
+    <figure class="frame shot-fig"><img src="images/test-0101.png" alt="Test 2: switches 0101, the second and fourth LEDs lit" width="1223" height="411" loading="lazy"><figcaption>Test 2: 0101 = 5 <button type="button" class="link-btn" data-set="5">Show on BitLight</button></figcaption></figure>
+    <figure class="frame shot-fig"><img src="images/test-1001.png" alt="Test 3: switches 1001, the first and fourth LEDs lit" width="1151" height="366" loading="lazy"><figcaption>Test 3: 1001 = 9 <button type="button" class="link-btn" data-set="9">Show on BitLight</button></figcaption></figure>
+    <figure class="frame shot-fig"><img src="images/test-1100.png" alt="Test 4: switches 1100, the two left LEDs lit" width="1143" height="375" loading="lazy"><figcaption>Test 4: 1100 = 12 <button type="button" class="link-btn" data-set="12">Show on BitLight</button></figcaption></figure>
+  </div>
+  <div class="cols">
+    <div class="prose">
+      <h3>Corrections made</h3>
+      <p>No corrections were needed after testing: all four test cases passed on the first run, with every LED pattern matching the expected binary value.</p>
+    </div>
+    <div class="prose">
+      <h3>Limitations</h3>
+      <ul>
+        <li>Only four bits, so the display covers 0 to 15.</li>
+        <li>The user adds the place values in their head; there is no automatic decimal readout.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 10. DEMONSTRATION -->
+<section class="block" id="demo" aria-labelledby="h-demo">
+  <header class="block-head">
+    <span class="num">10</span>
+    <h2 id="h-demo">Demonstration</h2>
+  </header>
+  <div class="cols">
+    <figure class="frame demo-fig">
+      <video controls playsinline preload="metadata" poster="images/demo-poster.jpg" width="724" height="298">
+        <source src="images/demo.mp4" type="video/mp4">
+        Your browser can't play this video. <a href="images/demo.mp4">Download the demo video</a>.
+      </video>
+      <figcaption>My Tinkercad simulation: when I start it, all four LEDs light up (1111 = 15). I then flip each switch in turn, and only its own LED turns off and back on, which shows every bit works independently. When I stop the simulation, all the LEDs go dark.</figcaption>
+    </figure>
+    <div class="prose">
+      <h3>How to use BitLight</h3>
+      <ol>
+        <li>Click <strong>Start Simulation</strong> in Tinkercad.</li>
+        <li>Slide any switch on to set that bit to 1. Its LED lights up.</li>
+        <li>Read the LEDs from left to right as a binary number (8, 4, 2, 1).</li>
+        <li>Add the place values of the lit LEDs to get the decimal value, or read the pattern as one hex digit.</li>
+        <li>Change the switches to try another number. The LEDs update straight away.</li>
+      </ol>
+      <p>For example, switches on, on, off, on light the LEDs worth 8, 4 and 1: 1101<sub>2</sub> = 13<sub>10</sub> = D<sub>16</sub>. <button type="button" class="link-btn" data-set="13">Show 1101 on BitLight</button></p>
+    </div>
+  </div>
+</section>
+
+<!-- 11. CONCLUSION AND REFLECTION -->
+<section class="block" id="reflection" aria-labelledby="h-reflection">
+  <header class="block-head">
+    <span class="num">11</span>
+    <h2 id="h-reflection">Conclusion and reflection</h2>
+  </header>
+  <div class="cols">
+    <div class="prose">
+      <h3>What I learned and applied</h3>
+      <p>This project connected all of Module 2. I used number-system conversion to plan what each LED means, binary arithmetic to check results on the display, and logic gates to explain why a switch in series acts like an AND gate. I used Boolean algebra and a K-Map to design an extra alert for values of 10 or more, and pseudocode and a flowchart to describe the circuit's behaviour step by step.</p>
+      <h3>Challenges and how I solved them</h3>
+      <p>The biggest challenge was that all of this needs time to learn. Number systems, logic gates, K-Maps and wiring a circuit were new to me, and I had to take it step by step. But it was worth it: by the end I could see how the ideas connect and build something that actually works.</p>
+    </div>
+    <div class="prose">
+      <h3>Real-world value</h3>
+      <p>The idea that one wire or one light is one bit is used in status-indicator panels, DIP-switch address settings on devices, and the registers inside a CPU. BitLight is a simple teaching tool that helps classmates see binary instead of only memorising it.</p>
+      <h3>Future improvements</h3>
+      <ul>
+        <li>Add the K-Map alert LED to the real circuit.</li>
+        <li>Use an Arduino and a 7-segment display to show the decimal value automatically.</li>
+        <li>Extend the display to 8 bits, 0 to 255.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- CERTIFICATES AND PROFESSIONAL DEVELOPMENT -->
+<section class="block" id="certificates" aria-labelledby="h-certs">
+  <header class="block-head">
+    <h2 id="h-certs">Certificates and professional development</h2>
+  </header>
+  <article class="cert">
+    <a class="cert-img" href="https://mcm.codechum.com/certificates/32086">
+      <img src="images/codechum-certificate.jpg" alt="CodeChum certificate of completion: C++ Programming 1 in CS101.A124, total score 590 out of 630, awarded to Ronnel Gambong, issued November 3, 2026." width="1200" height="927" loading="lazy">
+    </a>
+    <div class="prose">
+      <h3>C++ Programming 1</h3>
+      <dl class="facts">
+        <dt>Issued by</dt><dd>CodeChum (MMCM)</dd>
+        <dt>Class</dt><dd>CS101.A124</dd>
+        <dt>Date earned</dt><dd>November 3, 2026</dd>
+        <dt>Score</dt><dd>590 / 630</dd>
+      </dl>
+      <p><a href="https://mcm.codechum.com/certificates/32086">Verify the certificate on CodeChum</a></p>
+      <h4>Skills gained</h4>
+      <p>Writing and debugging C++ programs using variables, input and output, operators, conditional statements and loops. These are the same sequence, selection and iteration structures used in this project's pseudocode.</p>
+    </div>
+  </article>
+  <!-- To add another certificate later, copy the <article class="cert"> block above. -->
+</section>
+
+<!-- AI-USE DECLARATION -->
+<section class="block" id="ai" aria-labelledby="h-ai">
+  <header class="block-head">
+    <h2 id="h-ai">AI-use declaration</h2>
+  </header>
+  <blockquote class="declaration">
+    <p>I, Ronnel P. Gambong, affirm that this work, titled “BitLight: A 4-Bit Binary Number Display,” submitted for CS101L is my own project, completed with the assistance of Claude by Anthropic (<a href="https://claude.ai">claude.ai</a>). I designed, built and tested the BitLight circuit in Tinkercad, and recorded my own test screenshots and demo video. I used Claude to help write the explanations, create the diagrams, and build and polish this website. I reviewed the content against my own circuit and test results, and I take responsibility for its accuracy.</p>
+  </blockquote>
+</section>
+
+</main>
+
+<footer class="footer">
+  <p>Ronnel P. Gambong, BS Computer Science</p>
+  <p>CS101L Introduction to Computer Systems, Mapúa Malayan Colleges Mindanao, 2026</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
